@@ -38,6 +38,21 @@ const StorageCtrl = (function() {
         }
       });
       localStorage.setItem("items", JSON.stringify(items));
+      return items;
+    },
+    deleteItemFromStorage: function(id) {
+      let items = JSON.parse(localStorage.getItem("items"));
+
+      items.forEach((item, index) => {
+        if (id === item.id) {
+          items.splice(index, 1);
+        }
+      });
+      localStorage.setItem("items", JSON.stringify(items));
+      return items;
+    },
+    clearStorage: function() {
+      localStorage.removeItem("items");
     }
   };
 })();
@@ -428,6 +443,9 @@ const App = (function(ItemCtrl, StorageCtrl, UICtrl) {
     const totalCalories = ItemCtrl.getTotalCalories();
     UICtrl.showTotalCalories(totalCalories);
 
+    // Usuń z local storage
+    StorageCtrl.deleteItemFromStorage(currentItem.id);
+
     UICtrl.clearEditState();
 
     e.preventDefault();
@@ -443,6 +461,7 @@ const App = (function(ItemCtrl, StorageCtrl, UICtrl) {
     UICtrl.clearEditState();
     UICtrl.hideList();
     UICtrl.clearList();
+    StorageCtrl.clearStorage();
     e.preventDefault();
   };
 
