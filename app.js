@@ -3,7 +3,7 @@ const StorageCtrl = (function() {
   // Public methods
   return {
     storeItem: function(item) {
-      let items = [];
+      let items;
       // Czy są tu jakieś pozycje w local storage?
       if (localStorage.getItem("items") === null) {
         items = [];
@@ -14,13 +14,20 @@ const StorageCtrl = (function() {
       } else {
         // Pozyskaj to co jużjest w local storage
         items = JSON.parse(localStorage.getItem("items"));
-
         // dodaj nową pozycję
         items.push(item);
-
         // zresetuj local storage
         localStorage.setItem("items", JSON.stringify(items));
       }
+    },
+    getItemsFromStorage: function() {
+      let items;
+      if (localStorage.getItem("items") === null) {
+        items = [];
+      } else {
+        items = JSON.parse(localStorage.getItem("items"));
+      }
+      return items;
     }
   };
 })();
@@ -36,7 +43,7 @@ const ItemCtrl = (function() {
 
   // Data structure / State
   const data = {
-    items: [],
+    items: StorageCtrl.getItemsFromStorage(),
     currentItem: null,
     totalCalories: 0
   };
