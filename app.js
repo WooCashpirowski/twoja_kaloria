@@ -28,6 +28,16 @@ const StorageCtrl = (function() {
         items = JSON.parse(localStorage.getItem("items"));
       }
       return items;
+    },
+    updateItemStorage: function(updatedItem) {
+      let items = JSON.parse(localStorage.getItem("items"));
+
+      items.forEach((item, index) => {
+        if (updatedItem.id === item.id) {
+          items.splice(index, 1, updatedItem);
+        }
+      });
+      localStorage.setItem("items", JSON.stringify(items));
     }
   };
 })();
@@ -43,6 +53,8 @@ const ItemCtrl = (function() {
 
   // Data structure / State
   const data = {
+    // przed dodaniem funkcjonalności localStorage było
+    // items = [],
     items: StorageCtrl.getItemsFromStorage(),
     currentItem: null,
     totalCalories: 0
@@ -394,6 +406,9 @@ const App = (function(ItemCtrl, StorageCtrl, UICtrl) {
 
     const totalCalories = ItemCtrl.getTotalCalories();
     UICtrl.showTotalCalories(totalCalories);
+
+    // Zaktualizuj local storage
+    StorageCtrl.updateItemStorage(updatedItem);
 
     UICtrl.clearEditState();
 
