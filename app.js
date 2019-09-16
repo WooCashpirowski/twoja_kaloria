@@ -1,6 +1,6 @@
 // Local storage controller
 
-// Items controller
+// Items controller (Data structure)
 const ItemCtrl = (function() {
   // Item constructor
   const Item = function(id, name, calories) {
@@ -69,6 +69,22 @@ const ItemCtrl = (function() {
       return found;
     },
 
+    deleteItem: function(id) {
+      // Pozyskaj id przez metodę MAP
+      const ids = data.items.map(item => {
+        return item.id;
+      });
+      // Uzyskaj index
+      const index = ids.indexOf(id);
+
+      // Usuń pozycję ze struktury danych
+      data.items.splice(index, 1);
+    },
+
+    clearAllItems: function() {
+      data.items = [];
+    },
+
     setCurrentItem: function(item) {
       data.currentItem = item;
     },
@@ -107,6 +123,7 @@ const UICtrl = (function() {
     updateBtn: ".update-btn",
     deleteBtn: ".delete-btn",
     backBtn: ".back-btn",
+    clearBtn: ".clear-btn",
     itemNameInput: "#item-name",
     itemCaloriesInput: "#item-calories",
     totalCalories: ".total-calories"
@@ -170,6 +187,21 @@ const UICtrl = (function() {
           <a href="#" class="secondary-content"><i class="edit-item fa fa-pencil"></i></a>
           `;
         }
+      });
+    },
+
+    deleteListItem: function(id) {
+      const itemID = `#item-${id}`;
+      const item = document.querySelector(itemID);
+
+      item.remove();
+    },
+
+    clearList: function() {
+      let listItems = document.querySelectorAll(UISelectors.listItems);
+      listItems = Array.from(listItems);
+      listItems.forEach(item => {
+        item.remove();
       });
     },
 
@@ -248,6 +280,16 @@ const App = (function(ItemCtrl, UICtrl) {
       UICtrl.clearEditState();
       e.preventDefault();
     });
+
+    // Zdarzenie po kliknięciu w przycisk "Usuń"
+    document
+      .querySelector(UISelectors.deleteBtn)
+      .addEventListener("click", itemDeleteSubmit);
+
+    // Zdarzenie po kliknięciu w przycisk "Wyczyść"
+    document
+      .querySelector(UISelectors.clearBtn)
+      .addEventListener("click", clearAllItemsClick);
   };
 
   //   Add item submit
@@ -320,6 +362,37 @@ const App = (function(ItemCtrl, UICtrl) {
 
     UICtrl.clearEditState();
 
+    e.preventDefault();
+  };
+
+  const itemDeleteSubmit = function(e) {
+    // pozyskaj obecnie edytowaną pozycję
+    const currentItem = ItemCtrl.getCurrentItem();
+
+    // Usuń ze struktury danych
+    ItemCtrl.deleteItem(currentItem.id);
+
+    // Usuń z UI
+    UICtrl.deleteListItem(currentItem.id);
+
+    const totalCalories = ItemCtrl.getTotalCalories();
+    UICtrl.showTotalCalories(totalCalories);
+
+    UICtrl.clearEditState();
+
+    e.preventDefault();
+  };
+
+  const clearAllItemsClick = function(e) {
+    // Usuń wszystkie pozycje ze struktury danych
+    ItemCtrl.clearAllItems();
+    // Usuń pozycje z UI
+
+    const totalCalories = ItemCtrl.getTotalCalories();
+    UICtrl.showTotalCalories(totalCalories);
+    UICtrl.clearEditState();
+    UICtrl.hideList();
+    UICtrl.clearList();
     e.preventDefault();
   };
 
