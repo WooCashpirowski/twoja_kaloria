@@ -197,7 +197,7 @@ const UICtrl = (function() {
         html += `
               <li class="collection-item" id="item-${item.id}">
           <strong>${item.name}</strong> <em>${item.calories} kcal</em>
-          <a href="#" class="secondary-content"><i class="fa fa-pencil"></i></a>
+          <a href="#" class="secondary-content"><i class="edit-item fa fa fa-pencil"></i></a>
         </li>
               `;
       });
